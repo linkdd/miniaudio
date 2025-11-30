@@ -70,7 +70,7 @@ option(MINIAUDIO_NO_NEON                       "Disable NEON optimizations"     
 option(MINIAUDIO_NO_RUNTIME_LINKING            "Disable runtime linking"             OFF)
 option(MINIAUDIO_USE_STDINT                    "Use <stdint.h> for sized types"      OFF)
 option(MINIAUDIO_DEBUG_OUTPUT                  "Enable stdout debug output"          OFF)
-option(MINIAUDIO_INSTALL                       "Enable installation targets"         ON) 
+option(MINIAUDIO_INSTALL                       "Enable installation targets"         ON)
 
 include(GNUInstallDirs)
 
@@ -480,7 +480,7 @@ if (UNIX)
             list(APPEND COMMON_LINK_LIBRARIES ${LIB_DL})  # For dlopen(), etc. Most compilers will link to this by default, but some may not.
         endif()
     endif()
-    
+
     find_library(LIB_PTHREAD NAMES pthread)
     if(LIB_PTHREAD)
         list(APPEND COMMON_LINK_LIBRARIES ${LIB_PTHREAD}) # Some compilers will not link to pthread by default so list it here just in case.
@@ -502,7 +502,7 @@ endif()
 
 
 # Static Libraries
-add_library(miniaudio
+add_library(miniaudio STATIC
     miniaudio.c
     miniaudio.h
 )
@@ -530,7 +530,7 @@ if(HAS_LIBVORBIS)
 endif()
 
 if(HAS_LIBVORBIS)
-    add_library(miniaudio_libvorbis
+    add_library(miniaudio_libvorbis STATIC
         extras/decoders/libvorbis/miniaudio_libvorbis.c
         extras/decoders/libvorbis/miniaudio_libvorbis.h
     )
@@ -559,7 +559,7 @@ if(HAS_LIBOPUS)
 endif()
 
 if(HAS_LIBOPUS)
-    add_library(miniaudio_libopus
+    add_library(miniaudio_libopus STATIC
         extras/decoders/libopus/miniaudio_libopus.c
         extras/decoders/libopus/miniaudio_libopus.h
     )
@@ -578,11 +578,11 @@ endif()
 
 if (NOT MINIAUDIO_NO_EXTRA_NODES)
     function(add_extra_node name)
-        add_library(miniaudio_${name}_node
+        add_library(miniaudio_${name}_node STATIC
             extras/nodes/ma_${name}_node/ma_${name}_node.c
             extras/nodes/ma_${name}_node/ma_${name}_node.h
         )
-        
+
         set(libs "${LIBS_TO_INSTALL}")
 
         list(APPEND libs miniaudio_${name}_node)
@@ -738,7 +738,7 @@ if(MINIAUDIO_BUILD_TESTS)
 
     add_miniaudio_test(miniaudio_filtering filtering/filtering.c)
     add_test(NAME miniaudio_filtering COMMAND miniaudio_filtering ${CMAKE_CURRENT_SOURCE_DIR}/data/16-44100-stereo.flac)
-    
+
     add_miniaudio_test(miniaudio_generation generation/generation.c)
     add_test(NAME miniaudio_generation COMMAND miniaudio_generation)
 endif()
